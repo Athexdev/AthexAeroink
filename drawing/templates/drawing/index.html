@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Air Sketch Pro | MediaPipe Vision</title>
+    <link rel="stylesheet" href="{% static 'drawing/css/style.css' %}">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="canvas-container">
+        <video id="webcam" autoplay playsinline style="position: absolute; opacity: 0; pointer-events: none;"></video>
+        <canvas id="sketchCanvas"></canvas>
+
+        <div class="sidebar">
+            <div class="color-option active" style="background: #00ffcc;" onclick="pickColor('#00ffcc', this)"></div>
+            <div class="color-option" style="background: #ff4757;" onclick="pickColor('#ff4757', this)"></div>
+            <div class="color-option" style="background: #ffffff;" onclick="pickColor('#ffffff', this)"></div>
+            <div class="color-option" style="background: #ffeb3b;" onclick="pickColor('#ffeb3b', this)"></div>
+            <div class="color-option" style="background: #e91e63;" onclick="pickColor('#e91e63', this)"></div>
+        </div>
+
+        <div class="ui-bar">
+            <button class="btn" onclick="clearCanvas()">Clear Page</button>
+            <button class="btn btn-save" onclick="saveSketch()">Save Artwork</button>
+        </div>
+    </div>
+
+    <script src="{% static 'drawing/js/sketch.js' %}"></script>
+</body>
+</html>
