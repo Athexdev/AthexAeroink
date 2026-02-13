@@ -1,0 +1,5 @@
+need python 3.12 version
+
+py -3.12 -m venv venv
+
+then activate it
