@@ -2,6 +2,7 @@ const video = document.getElementById('webcam');
 const canvas = document.getElementById('sketchCanvas');
 const ctx = canvas.getContext('2d');
 let currentColor = "#00ffcc";
+let isEraser = false; // Eraser state
 
 // Stabilization
 let lastX, lastY;
@@ -35,15 +36,15 @@ function onResults(results) {
         ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
     }
 
-    // --- ONLY DRAW THE TOP TIP POINT ---
+    // --- DRAW THE TIP POINT (Cursor) ---
     if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
         const landmarks = results.multiHandLandmarks[0];
-        const indexTip = landmarks[8]; // This is the "Top Point" aka First Point
+        const indexTip = landmarks[8];
 
-        // Draw ONLY the single tip point
-        ctx.fillStyle = '#FF0000'; // Red dot
+        // Change cursor color based on mode
+        ctx.fillStyle = isEraser ? '#ff4757' : '#FF0000'; 
         ctx.shadowBlur = 10;
-        ctx.shadowColor = '#FF0000';
+        ctx.shadowColor = ctx.fillStyle;
         ctx.beginPath();
         ctx.arc(indexTip.x * canvas.width, indexTip.y * canvas.height, 8, 0, 2 * Math.PI);
         ctx.fill();
@@ -53,12 +54,31 @@ function onResults(results) {
     // 2. Draw your persistent artwork
     ctx.drawImage(inkCanvas, 0, 0);
 
-    // 3. Drawing Logic
+    // 3. Drawing/Eraser Logic
     if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
         const landmarks = results.multiHandLandmarks[0];
         const indexTip = landmarks[8];
-        const indexPip = landmarks[6]; // Joint used to check if finger is "up"
+        const indexPip = landmarks[6];
         
+        // Detect if all fingers are open for Eraser
+        const thumbTip = landmarks[4];
+        const middleTip = landmarks[12];
+        const ringTip = landmarks[16];
+        const pinkyTip = landmarks[20];
+        
+        const thumbIp = landmarks[2];
+        const middlePip = landmarks[10];
+        const ringPip = landmarks[14];
+        const pinkyPip = landmarks[18];
+
+        // Logic: All tips are above their respective PIP joints (finger is straight up)
+        const allFingersOpen = indexTip.y < indexPip.y && 
+                               middleTip.y < middlePip.y && 
+                               ringTip.y < ringPip.y && 
+                               pinkyTip.y < pinkyPip.y;
+
+        isEraser = allFingersOpen;
+
         const rawX = (1 - indexTip.x) * canvas.width;
         const rawY = indexTip.y * canvas.height;
 
@@ -66,11 +86,20 @@ function onResults(results) {
         smoothX = smoothX + (rawX - smoothX) * STRENGTH;
         smoothY = smoothY + (rawY - smoothY) * STRENGTH;
 
-        // Draw if finger is pointing up
+        // Draw or Erase if Index Finger is up
         if (indexTip.y < indexPip.y) {
             if (lastX && lastY) {
-                inkCtx.strokeStyle = currentColor;
-                inkCtx.lineWidth = 8;
+                if (isEraser) {
+                    // Eraser settings
+                    inkCtx.globalCompositeOperation = 'destination-out';
+                    inkCtx.lineWidth = 40; // Thick eraser
+                } else {
+                    // Pen settings
+                    inkCtx.globalCompositeOperation = 'source-over';
+                    inkCtx.strokeStyle = currentColor;
+                    inkCtx.lineWidth = 8;
+                }
+                
                 inkCtx.lineCap = "round";
                 inkCtx.beginPath();
                 inkCtx.moveTo(lastX, lastY);
@@ -84,8 +113,8 @@ function onResults(results) {
             lastY = null;
         }
 
-        // Color selector check
-        if (smoothX < 100) checkColorHover(smoothY);
+        // Color selector check (Now updated for TOP placement)
+        if (smoothY < 100) checkColorHover(smoothX);
     }
 }
 
@@ -120,14 +149,16 @@ function pickColor(color, el) {
     el.classList.add('active');
 }
 
-function checkColorHover(y) {
+// Updated to check hover against the top-toolbar
+function checkColorHover(x) {
+    const toolbar = document.querySelector('.top-toolbar');
     const options = document.querySelectorAll('.color-option');
+    
     options.forEach((opt) => {
         const rect = opt.getBoundingClientRect();
-        if (y > rect.top && y < rect.bottom) {
-            currentColor = opt.style.backgroundColor;
-            options.forEach(o => o.classList.remove('active'));
-            opt.classList.add('active');
+        // Check if cursor X is within the color bubble horizontal bounds
+        if (x > rect.left && x < rect.right && toolbar.getBoundingClientRect().top < 100) {
+            pickColor(opt.style.backgroundColor, opt);
         }
     });
 }
@@ -138,6 +169,7 @@ async function saveSketch() {
     const data = inkCanvas.toDataURL('image/png');
     const fd = new FormData();
     fd.append('image', data);
+    // Note: ensure CSRF token is handled if using Django for the fetch request
     const response = await fetch('/save/', { method: 'POST', body: fd });
     if(response.ok) alert("Art Saved, Vro! 🚀");
 }
