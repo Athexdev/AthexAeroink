@@ -1,15 +1,17 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Air Sketch Pro | MediaPipe Vision</title>
+    <title>Athex AeroInk | MediaPipe Vision</title>
     <link rel="stylesheet" href="{% static 'drawing/css/style.css' %}">
-    
+
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-    
+
     <style>
         .top-toolbar {
             position: absolute;
@@ -23,7 +25,7 @@
             border-radius: 50px;
             backdrop-filter: blur(5px);
             z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             align-items: center;
         }
 
@@ -61,13 +63,51 @@
             cursor: pointer;
             font-weight: bold;
         }
-        
+
         .btn-save {
             background-color: #2ed573;
             color: white;
         }
+
+        .about-section {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .about-section h3 {
+            margin: 0 0 10px 0;
+            color: #00ffcc;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .about-section p {
+            margin: 6px 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #e0e0e0;
+        }
+
+        .about-section strong {
+            color: #fff;
+        }
     </style>
 </head>
+
 <body>
     <div class="canvas-container">
         <video id="webcam" autoplay playsinline style="position: absolute; opacity: 0; pointer-events: none;"></video>
@@ -76,7 +116,8 @@
         <div class="top-toolbar">
             <div class="color-option active" style="background: #00ffcc;" onclick="pickColor('#00ffcc', this)"></div>
             <div class="color-option" style="background: #ff4757;" onclick="pickColor('#ff4757', this)"></div>
-            <div class="color-option" style="background: #ffffff;" onclick="border: 2px solid #ccc; background: #ffffff;" onclick="pickColor('#ffffff', this)"></div>
+            <div class="color-option" style="background: #ffffff; border: 2px solid #ccc;"
+                onclick="pickColor('#ffffff', this)"></div>
             <div class="color-option" style="background: #ffeb3b;" onclick="pickColor('#ffeb3b', this)"></div>
             <div class="color-option" style="background: #e91e63;" onclick="pickColor('#e91e63', this)"></div>
         </div>
@@ -85,8 +126,18 @@
             <button class="btn" onclick="clearCanvas()">Clear Page</button>
             <button class="btn btn-save" onclick="saveSketch()">Save Artwork</button>
         </div>
+
+        <div class="about-section">
+            <h3>👨‍💻 Developer Info 👨‍💻</h3>
+            <p><strong>Developer:</strong> Debesh Nayak</p>
+            <p><strong>Project:</strong> Athex AeroInk ML</p>
+            <p><strong>GitHub:</strong> <a href="https://github.com/Athexdev" target="_blank" rel="noopener noreferrer"
+                    style="color: #00ffcc; text-decoration: none;">Athexdev</a></p>
+            <p>Make Sure To Follow Me On GitHub 😇</p>
+        </div>
     </div>
 
     <script src="{% static 'drawing/js/sketch.js' %}"></script>
 </body>
+
 </html>

@@ -1,6 +1,6 @@
-# Air Sketch Pro 🎨✋
+# 🚀 Athex AeroInk
 
-**Air Sketch Pro** is an innovative web application that allows you to draw in mid-air using hand gestures, powered by MediaPipe and TensorFlow.js. No physical mouse or stylus required—just your webcam!
+**Athex AeroInk** is an innovative web application that allows you to draw in mid-air using hand gestures, powered by MediaPipe and TensorFlow.js. No physical mouse or stylus required—just your webcam!
 
 ## ✨ Features
 

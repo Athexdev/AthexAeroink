@@ -15,7 +15,7 @@ def save_sketch(request):
         if img_data:
             format, imgstr = img_data.split(';base64,')
             ext = format.split('/')[-1]
-            # Use unique names to avoid overwriting
+            # Use unique names to avoid overwriting like debesh 01, debesh02
             import uuid
             file = ContentFile(base64.b64decode(imgstr), name=f"art_{uuid.uuid4()}.{ext}")
             sketch = Sketch.objects.create(image=file)

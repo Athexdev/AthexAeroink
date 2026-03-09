@@ -171,5 +171,5 @@ async function saveSketch() {
     fd.append('image', data);
     // Note: ensure CSRF token is handled if using Django for the fetch request
     const response = await fetch('/save/', { method: 'POST', body: fd });
-    if(response.ok) alert("Art Saved, Vro! 🚀");
+    if(response.ok) alert("Art Saved, Thanks For Using Athex AeroInk! 🚀");
 }
